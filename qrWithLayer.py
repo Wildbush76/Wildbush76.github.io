@@ -2,6 +2,8 @@ import qrcode
 import random
 import os
 
+import qrcode.image.svg
+
 
 def createHtml(path: str, count):
     with open(path + "/index.html", "w") as file:
@@ -19,8 +21,8 @@ def createQr(url: str, currentNumbers, i):
     currentNumbers.add(number)
     os.mkdir(str(number))
     createHtml(str(number), i)
-    name = f"{number}/QR.png"
-    img.save(name)
+    name = f"{number}"
+    img.save(name + "/QR.png")
     return name
 
 
@@ -40,5 +42,6 @@ for i in range(1, layers + 1):
 qr = qrcode.QRCode(version=1, box_size=10, border=5)
 qr.add_data(previousUrl)
 qr.make(fit=True)
-img = qr.make_image(fill_color="black", back_color="white")
-img.save("root.png")
+img = qr.make_image(fill_color="black", back_color="white",
+                    image_factory=qrcode.image.svg.SvgImage)
+img.save("root.svg")
