@@ -10,15 +10,13 @@ def createHtml(path: str, count):
         file.write(f'<html><img src="QR.png"><h1>{count}</h1></html>')
 
 
-def createQr(url: str, currentNumbers, i):
+def createQr(url: str, currentNumbers: list, i: int):
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
     qr.add_data(url)
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
-    number = random.randint(0, 10000)
-    while number in currentNumbers:
-        number = random.randint(0, 10000)
-    currentNumbers.add(number)
+    number = random.choice(currentNumbers)
+    currentNumbers.remove(number)
     os.mkdir(str(number))
     createHtml(str(number), i)
     name = f"{number}"
@@ -29,14 +27,16 @@ def createQr(url: str, currentNumbers, i):
 # configurable
 websiteURL = "https://wildbush76.github.io/"
 endURL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=0gcJCdgAo7VqN5tD"
-layers = 5
+layers = 1000
 
 
 # end
 
-numbers = set()
+numbers = [x for x in range(layers * 2)]
 previousUrl = endURL
 for i in range(1, layers + 1):
+    if i % 10 == 0:
+        print(f"Completed {i} layers")
     previousUrl = websiteURL + createQr(previousUrl, numbers, i)
 
 qr = qrcode.QRCode(version=1, box_size=10, border=5)
@@ -45,3 +45,6 @@ qr.make(fit=True)
 img = qr.make_image(fill_color="black", back_color="white",
                     image_factory=qrcode.image.svg.SvgImage)
 img.save("root.svg")
+
+
+print("completed generation")
