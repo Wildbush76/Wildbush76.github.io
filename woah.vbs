@@ -1,1 +1,1 @@
-msgbox woah
+ MsgBox "WOAH!!!!", vbCritical, "Error"
